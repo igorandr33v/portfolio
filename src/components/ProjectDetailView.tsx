@@ -3,6 +3,7 @@ import { Project, Category } from '../types';
 import { ArrowLeft, ChevronLeft, ChevronRight, X, Upload, Trash2, ArrowRight, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { compressImageFile } from '../utils/imageCompressor';
+import { resolveImageUrl } from '../utils/imageUtils';
 
 interface ProjectDetailViewProps {
   project: Project;
@@ -89,6 +90,10 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
     project.subheading || `${category?.sectionTitle || 'DESIGN'} · ${project.year}`;
 
   const gallery = project.galleryImages || [];
+  const coverUrl = resolveImageUrl(project.imageUrl);
+  const gallery0 = resolveImageUrl(gallery[0]);
+  const gallery1 = resolveImageUrl(gallery[1]);
+  const gallery2 = resolveImageUrl(gallery[2]);
 
   return (
     <motion.div
@@ -153,9 +158,9 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
         {/* LEFT COLUMN: Main Cover image */}
         <div className="relative w-full aspect-[4/3] lg:aspect-[1.15/1] bg-[#D9D9D9] overflow-hidden group flex items-center justify-center">
-          {project.imageUrl ? (
+          {coverUrl ? (
             <img
-              src={project.imageUrl}
+              src={coverUrl}
               alt={project.title}
               className="w-full h-full object-cover"
             />
@@ -266,9 +271,9 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
       {/* SECTION 2: WIDE EDITORIAL SHOWCASE BANNER (Scrollable case study content) */}
       <div className="mt-16 lg:mt-24 w-full">
         <div className="relative w-full aspect-[2.1/1] bg-[#D9D9D9] overflow-hidden group flex items-center justify-center">
-          {gallery[0] ? (
+          {gallery0 ? (
             <img
-              src={gallery[0]}
+              src={gallery0}
               alt={`${project.title} - Showcase`}
               className="w-full h-full object-cover"
             />
@@ -322,9 +327,9 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
         {/* Detail Shot 1 */}
         <div>
           <div className="relative w-full aspect-[4/3] bg-[#D9D9D9] overflow-hidden group flex items-center justify-center">
-            {gallery[1] ? (
+            {gallery1 ? (
               <img
-                src={gallery[1]}
+                src={gallery1}
                 alt={`${project.title} - Detail 1`}
                 className="w-full h-full object-cover"
               />
@@ -373,9 +378,9 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
         {/* Detail Shot 2 */}
         <div>
           <div className="relative w-full aspect-[4/3] bg-[#D9D9D9] overflow-hidden group flex items-center justify-center">
-            {gallery[2] ? (
+            {gallery2 ? (
               <img
-                src={gallery[2]}
+                src={gallery2}
                 alt={`${project.title} - Detail 2`}
                 className="w-full h-full object-cover"
               />

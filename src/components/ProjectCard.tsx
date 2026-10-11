@@ -1,5 +1,6 @@
 import React from 'react';
 import { Project } from '../types';
+import { resolveImageUrl } from '../utils/imageUtils';
 
 interface ProjectCardProps {
   project: Project;
@@ -7,7 +8,8 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) => {
-  const hasImage = Boolean(project.imageUrl);
+  const resolvedSrc = resolveImageUrl(project.imageUrl);
+  const hasImage = Boolean(resolvedSrc);
 
   return (
     <article
@@ -26,7 +28,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
       {/* If real image is uploaded */}
       {hasImage ? (
         <img
-          src={project.imageUrl}
+          src={resolvedSrc}
           alt={project.title}
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"

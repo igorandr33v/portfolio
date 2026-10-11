@@ -61,8 +61,11 @@ export default function App() {
           return match
             ? {
                 ...initP,
-                imageUrl: match.imageUrl,
-                galleryImages: match.galleryImages || initP.galleryImages,
+                imageUrl: match.imageUrl || initP.imageUrl,
+                galleryImages:
+                  match.galleryImages && match.galleryImages.length > 0
+                    ? match.galleryImages
+                    : initP.galleryImages,
               }
             : initP;
         });

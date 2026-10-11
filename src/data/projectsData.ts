@@ -40,6 +40,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: 'Айдентика бренда кофе и обжарки «Aura»',
     shortTitle: 'AURA',
     subheading: 'BRAND IDENTITY & PACKAGING',
+    imageUrl: './images/croydon-cover.png',
     objective: 'Разработка комплексной айдентики, упаковочной системы и фирменного стиля для сети спешелти-кофеен. Создание теплого, минималистичного визуального языка, транслирующего внимание к происхождению зерна и мастерству обжарки.',
     services: ['Identity', 'Packaging', 'Art Direction'],
     industry: 'Coffee & Roastery',

@@ -38,6 +38,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
         <div className="w-full h-full bg-[#D9D9D9] transition-colors duration-400 ease-out group-hover:bg-[#CECECE]" />
       )}
 
+
       {/* Subtle modern hover overlay with project details */}
       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out p-4 md:p-5 flex flex-col justify-between text-white pointer-events-none">
         <div className="flex items-center justify-between">

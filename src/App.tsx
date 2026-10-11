@@ -12,8 +12,10 @@ import { ProjectCard } from './components/ProjectCard';
 import { ProjectDetailView } from './components/ProjectDetailView';
 import { Toast } from './components/Toast';
 import { Logo } from './components/Logo';
+import { MobileMenuDrawer } from './components/MobileMenuDrawer';
+import { AnimatedBurgerButton } from './components/AnimatedBurgerButton';
 
-// Choreographed stagger container variants for the 3x3 project grid
+// Choreographed stagger container variants for the project grid
 const gridContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -45,7 +47,7 @@ const cardVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.42,
-      ease: [0.22, 1, 0.36, 1] as const, // fluid cubic-bezier deceleration
+      ease: [0.22, 1, 0.36, 1] as const,
     },
   },
 };
@@ -78,6 +80,7 @@ export default function App() {
 
   const [activeCategoryId, setActiveCategoryId] = useState<string>('branding');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimeoutRef = useRef<number | null>(null);
 
@@ -160,9 +163,9 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Contacts block rendered identically across modes
+  // Contacts block exactly as in desktop (adapted: wraps neatly on smaller screens)
   const renderContacts = () => (
-    <div className="flex flex-wrap lg:flex-nowrap items-start justify-start lg:justify-end gap-x-6 md:gap-x-8 lg:gap-x-9 xl:gap-x-11 gap-y-2 text-sm md:text-[15px] font-normal text-black pt-1 select-text">
+    <div className="flex flex-wrap lg:flex-nowrap items-baseline justify-start lg:justify-end gap-x-5 sm:gap-x-6 md:gap-x-8 lg:gap-x-9 xl:gap-x-11 gap-y-1.5 text-sm sm:text-[14px] md:text-[15px] font-normal text-black pt-1 select-text">
       <a
         href="https://t.me/igor_andreev"
         target="_blank"
@@ -185,7 +188,7 @@ export default function App() {
           navigator.clipboard?.writeText('igor.andreev.1997@gmail.com');
           showToast('Email скопирован: igor.andreev.1997@gmail.com');
         }}
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0 text-left"
         title="Нажмите, чтобы скопировать"
       >
         igor.andreev.1997@gmail.com
@@ -196,7 +199,7 @@ export default function App() {
           navigator.clipboard?.writeText('8 909 702 3881');
           showToast('Телефон скопирован: 8 909 702 3881');
         }}
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0 text-left"
         title="Нажмите, чтобы скопировать"
       >
         8 909 702 3881
@@ -209,37 +212,66 @@ export default function App() {
       className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white ${
         selectedProject
           ? 'min-h-screen overflow-y-auto'
-          : 'w-screen h-screen overflow-hidden select-none'
+          : 'min-h-screen overflow-y-auto lg:w-screen lg:h-screen lg:overflow-hidden select-none'
       }`}
     >
       {/* 
         LAYOUT CONTAINER:
-        When selectedProject is open: allows natural smooth vertical scroll, preserving 40px margins and header.
-        When on main grid: strict 5x5 single-screen grid without scrolling.
+        - Mobile: Natural vertical scroll, exact desktop elements and fonts adapted to screen width.
+        - Desktop: Strict 5x5 single-screen grid without scrolling (when on main page).
       */}
       <div
-        className={`w-full p-[40px] box-border ${
+        className={`w-full p-4 sm:p-6 md:p-8 lg:p-[40px] box-border ${
           selectedProject
-            ? 'flex flex-col min-h-screen gap-[20px]'
-            : 'h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 lg:grid-rows-5 gap-[20px] overflow-y-auto lg:overflow-hidden'
+            ? 'flex flex-col min-h-screen gap-4 sm:gap-6 lg:gap-[20px]'
+            : 'flex flex-col min-h-screen lg:h-full lg:grid lg:grid-cols-5 lg:grid-rows-5 gap-4 sm:gap-6 lg:gap-[20px]'
         }`}
       >
-        {/* ROW 1: Header (always stays in place, preserving layout and styling) */}
+        {/* ROW 1: Header */}
         {selectedProject ? (
-          <header className="w-full flex flex-col lg:flex-row lg:items-center justify-between gap-4 shrink-0 pb-2">
-            <h1 className="text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight select-none">
-              ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
-            </h1>
-            {renderContacts()}
+          <header className="w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3 shrink-0 pb-2">
+            <div className="flex items-center justify-between w-full lg:w-auto">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight select-none">
+                ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
+              </h1>
+              <AnimatedBurgerButton
+                isOpen={isMobileMenuOpen}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden"
+                aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
+              />
+            </div>
+            {/* Contacts on desktop and mobile */}
+            <div className="w-full lg:w-auto">
+              {renderContacts()}
+            </div>
           </header>
         ) : (
           <>
-            <div className="lg:col-start-1 lg:col-span-2 lg:row-start-1 flex items-start">
-              <h1 className="text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight">
-                ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
-              </h1>
+            {/* Desktop: Title in Col 1-2 | Mobile: Header with Burger */}
+            <div className="lg:col-start-1 lg:col-span-2 lg:row-start-1 flex flex-col justify-start">
+              <div className="flex items-center justify-between w-full">
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight">
+                  ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
+                </h1>
+
+                {/* Mobile Burger Menu Button (Top Right, hidden on desktop) */}
+                <AnimatedBurgerButton
+                  isOpen={isMobileMenuOpen}
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="lg:hidden"
+                  aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
+                />
+              </div>
+
+              {/* Contacts directly on mobile under title using exact same text and font */}
+              <div className="lg:hidden w-full mt-2 sm:mt-3">
+                {renderContacts()}
+              </div>
             </div>
-            <div className="lg:col-start-3 lg:col-span-3 lg:row-start-1 flex flex-wrap lg:flex-nowrap items-start justify-start lg:justify-end gap-x-6 md:gap-x-8 lg:gap-x-9 xl:gap-x-11 gap-y-2 text-sm md:text-[15px] font-normal text-black pt-1">
+
+            {/* Desktop: Contacts in Col 3-5 */}
+            <div className="hidden lg:flex lg:col-start-3 lg:col-span-3 lg:row-start-1 items-start justify-end">
               {renderContacts()}
             </div>
           </>
@@ -247,8 +279,8 @@ export default function App() {
 
         {/* MAIN BODY AREA */}
         {selectedProject ? (
-          /* SCROLLABLE PROJECT CASE STUDY PAGE */
-          <main className="w-full flex-1 min-h-0 pt-2">
+          /* PROJECT CASE STUDY PAGE */
+          <main className="w-full flex-1 min-h-0 pt-1 sm:pt-2">
             <ProjectDetailView
               project={selectedProject}
               categories={CATEGORIES}
@@ -264,10 +296,10 @@ export default function App() {
             />
           </main>
         ) : (
-          /* STRICT 5x5 NO-SCROLL GRID (MAIN PAGE) */
+          /* MAIN GRID VIEW */
           <>
-            {/* ROW 2, COL 1: Navigation Tabs (01 / Брендинг, etc.) */}
-            <div className="lg:col-start-1 lg:row-start-2 lg:row-span-2 flex flex-col justify-start">
+            {/* DESKTOP ONLY: Row 2, Col 1 Navigation Tabs (01 / Брендинг, etc.) */}
+            <div className="hidden lg:flex lg:col-start-1 lg:row-start-2 lg:row-span-2 flex-col justify-start">
               <CategoryNav
                 categories={CATEGORIES}
                 activeCategoryId={activeCategoryId}
@@ -275,8 +307,8 @@ export default function App() {
               />
             </div>
 
-            {/* ROW 2-4, COL 3-5: The 3x3 Project Cards Grid with Motion animation */}
-            <div className="col-span-1 md:col-span-2 lg:col-start-3 lg:col-span-3 lg:row-start-2 lg:row-span-3 w-full h-full min-h-0">
+            {/* PROJECT CARDS GRID (Mobile: 1 col or 2 cols on tablet | Desktop: 3x3 strict grid) */}
+            <div className="w-full flex-1 min-h-0 lg:col-start-3 lg:col-span-3 lg:row-start-2 lg:row-span-3">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeCategoryId}
@@ -284,13 +316,13 @@ export default function App() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-3 gap-[20px]"
+                  className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-3 gap-4 sm:gap-5 lg:gap-[20px]"
                 >
                   {currentCategoryProjects.slice(0, 9).map((project) => (
                     <motion.div
                       key={project.id}
                       variants={cardVariants}
-                      className="w-full h-full min-h-[100px] lg:min-h-0"
+                      className="w-full h-full min-h-[140px] lg:min-h-0"
                     >
                       <ProjectCard
                         project={project}
@@ -305,15 +337,34 @@ export default function App() {
               </AnimatePresence>
             </div>
 
-            {/* ROW 5, COL 1: User Vector SVG Logo (width: 130px) */}
-            <div className="lg:col-start-1 lg:row-start-5 flex items-end pb-1">
+            {/* DESKTOP ONLY: Row 5, Col 1 User Vector SVG Logo */}
+            <div className="hidden lg:flex lg:col-start-1 lg:row-start-5 items-end pb-1">
               <div className="w-[130px]">
                 <Logo className="w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
+              </div>
+            </div>
+
+            {/* MOBILE ONLY: Vector Logo at bottom of projects */}
+            <div className="mt-8 pt-4 flex items-center justify-start lg:hidden pb-6">
+              <div className="w-[120px]">
+                <Logo className="w-[120px] h-auto text-black" />
               </div>
             </div>
           </>
         )}
       </div>
+
+      {/* Mobile Navigation Drawer with burger menu */}
+      <MobileMenuDrawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        categories={CATEGORIES}
+        activeCategoryId={activeCategoryId}
+        onSelectCategory={(id) => {
+          setActiveCategoryId(id);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
 
       {/* Copy Notification Toast */}
       <Toast message={toastMessage} />

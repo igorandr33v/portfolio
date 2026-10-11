@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Project, Category } from '../types';
-import { ArrowLeft, ChevronLeft, ChevronRight, X, Upload, Trash2, ArrowRight, ArrowUp } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, ArrowRight, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { compressImageFile } from '../utils/imageCompressor';
 import { resolveImageUrl } from '../utils/imageUtils';
@@ -103,57 +103,6 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
       className="w-full flex flex-col font-sans select-text pb-16"
     >
-      {/* Top sticky navigation bar */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-xs w-full flex items-center justify-between py-3 mb-6 select-none border-b border-neutral-100">
-        {/* Back to all projects */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="group flex items-center gap-2 text-xs md:text-sm font-medium text-black hover:opacity-50 transition-opacity duration-300 cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform duration-300" />
-          <span>Назад к проектам</span>
-        </button>
-
-        {/* Project category & number tag */}
-        <div className="hidden sm:flex items-center gap-2 text-xs text-neutral-400 font-normal">
-          <span className="font-semibold text-black">{project.number}</span>
-          <span>/</span>
-          <span>{category?.name || 'Проект'}</span>
-        </div>
-
-        {/* Top-right controls */}
-        <div className="flex items-center gap-2 text-xs">
-          <span className="hidden md:inline-block text-[11px] uppercase tracking-widest text-neutral-400 mr-2 font-mono">
-            HEADLINE
-          </span>
-          <button
-            type="button"
-            onClick={onPrev}
-            className="p-1 text-neutral-500 hover:text-black transition-colors cursor-pointer"
-            title="Предыдущий проект (←)"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            className="p-1 text-neutral-500 hover:text-black transition-colors cursor-pointer"
-            title="Следующий проект (→)"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 text-neutral-500 hover:text-black transition-colors ml-1 cursor-pointer"
-            title="Закрыть (Esc)"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
       {/* SECTION 1: MAIN TEMPLATE HERO (Matches screenshot exactly) */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
         {/* LEFT COLUMN: Main Cover image */}
@@ -456,11 +405,11 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
       </div>
 
       {/* SECTION 5: FOOTER NAVIGATION (Next project & Back to grid) */}
-      <div className="mt-16 lg:mt-24 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-6 select-none">
+      <div className="mt-14 sm:mt-16 lg:mt-24 pt-6 sm:pt-8 border-t border-neutral-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 select-none">
         <button
           type="button"
           onClick={onClose}
-          className="flex items-center gap-2 text-sm font-medium text-black hover:opacity-50 transition-opacity cursor-pointer"
+          className="order-2 sm:order-1 flex items-center justify-center sm:justify-start gap-2 py-3 px-4 sm:p-0 text-sm font-medium text-black hover:opacity-50 active:bg-neutral-100 sm:active:bg-transparent border border-neutral-200 sm:border-0 transition cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Все проекты</span>
@@ -470,7 +419,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
           <button
             type="button"
             onClick={onNext}
-            className="group flex items-center gap-2 text-sm font-medium text-black hover:opacity-50 transition-opacity cursor-pointer"
+            className="order-1 sm:order-2 group flex items-center justify-center sm:justify-start gap-2 py-3.5 px-4 bg-black text-white sm:bg-transparent sm:text-black hover:opacity-85 sm:hover:opacity-50 transition-all cursor-pointer text-sm font-medium"
           >
             <span>Следующий проект: <strong className="font-semibold">{nextProject.shortTitle || nextProject.title}</strong></span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
@@ -480,7 +429,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
         <button
           type="button"
           onClick={scrollToTop}
-          className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-black transition-colors cursor-pointer"
+          className="order-3 flex items-center justify-center sm:justify-end gap-1.5 py-2 text-xs text-neutral-400 hover:text-black transition-colors cursor-pointer"
         >
           <span>Наверх</span>
           <ArrowUp className="w-3.5 h-3.5" />

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Project, Category } from '../types';
 import { ArrowLeft, ChevronLeft, ChevronRight, X, Upload, Trash2, ArrowRight, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
+import { compressImageFile } from '../utils/imageCompressor';
 
 interface ProjectDetailViewProps {
   project: Project;
@@ -42,29 +43,29 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose, onPrev, onNext]);
 
-  // Main cover upload handler
-  const handleMainUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Main cover upload handler with compression
+  const handleMainUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const result = uploadEvent.target?.result as string;
-        if (result) onUpdateImage(project.id, result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImageFile(file);
+        onUpdateImage(project.id, compressed);
+      } catch (err) {
+        console.error('Failed to process image:', err);
+      }
     }
   };
 
-  // Gallery image upload handler
-  const handleGalleryUpload = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Gallery image upload handler with compression
+  const handleGalleryUpload = (index: number) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const result = uploadEvent.target?.result as string;
-        if (result) onUpdateGalleryImage(project.id, index, result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImageFile(file);
+        onUpdateGalleryImage(project.id, index, compressed);
+      } catch (err) {
+        console.error('Failed to process image:', err);
+      }
     }
   };
 

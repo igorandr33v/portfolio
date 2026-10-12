@@ -26,6 +26,7 @@ export function resolveImageUrl(url?: string): string | undefined {
   if (path.startsWith('/')) path = path.slice(1);
   if (path.startsWith('public/')) path = path.slice(7);
   if (path.startsWith('/')) path = path.slice(1);
+  if (!path.startsWith('images/')) path = `images/${path}`;
 
   return `./${path}`;
 }

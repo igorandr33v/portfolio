@@ -14,6 +14,7 @@ import { Toast } from './components/Toast';
 import { Logo } from './components/Logo';
 import { MobileMenuDrawer } from './components/MobileMenuDrawer';
 import { AnimatedBurgerButton } from './components/AnimatedBurgerButton';
+import { ArrowLeft } from 'lucide-react';
 
 // Choreographed stagger container variants for the project grid
 const gridContainerVariants: Variants = {
@@ -60,16 +61,32 @@ export default function App() {
         const parsed: Project[] = JSON.parse(saved);
         return INITIAL_PROJECTS.map((initP) => {
           const match = parsed.find((p) => p.id === initP.id);
-          return match
-            ? {
-                ...initP,
-                imageUrl: match.imageUrl || initP.imageUrl,
-                galleryImages:
-                  match.galleryImages && match.galleryImages.length > 0
-                    ? match.galleryImages
-                    : initP.galleryImages,
-              }
-            : initP;
+          if (!match) return initP;
+
+          // For Croydon (b-1), ensure the 8 case study images are always loaded
+          if (initP.id === 'b-1') {
+            const hasCompleteGallery =
+              match.galleryImages &&
+              match.galleryImages.length >= 8 &&
+              match.galleryImages.some((img) => img.includes('jersey.png'));
+
+            return {
+              ...initP,
+              imageUrl: match.imageUrl || initP.imageUrl,
+              galleryImages: hasCompleteGallery
+                ? match.galleryImages
+                : initP.galleryImages,
+            };
+          }
+
+          return {
+            ...initP,
+            imageUrl: match.imageUrl || initP.imageUrl,
+            galleryImages:
+              match.galleryImages && match.galleryImages.length > 0
+                ? match.galleryImages
+                : initP.galleryImages,
+          };
         });
       }
     } catch {
@@ -113,6 +130,40 @@ export default function App() {
     showToast(imageUrl ? 'Изображение обновлено' : 'Обложка сброшена на серый квадрат');
   };
 
+  const handleAddGalleryImages = (projectId: string, newImages: string[]) => {
+    setProjects((prev) =>
+      prev.map((p) => {
+        if (p.id !== projectId) return p;
+        const gallery = [...(p.galleryImages || []), ...newImages];
+        return { ...p, galleryImages: gallery };
+      })
+    );
+    setSelectedProject((prev) => {
+      if (!prev || prev.id !== projectId) return prev;
+      const gallery = [...(prev.galleryImages || []), ...newImages];
+      return { ...prev, galleryImages: gallery };
+    });
+    showToast(`Загружено изображений: ${newImages.length}`);
+  };
+
+  const handleRemoveGalleryImage = (projectId: string, index: number) => {
+    setProjects((prev) =>
+      prev.map((p) => {
+        if (p.id !== projectId) return p;
+        const gallery = [...(p.galleryImages || [])];
+        gallery.splice(index, 1);
+        return { ...p, galleryImages: gallery };
+      })
+    );
+    setSelectedProject((prev) => {
+      if (!prev || prev.id !== projectId) return prev;
+      const gallery = [...(prev.galleryImages || [])];
+      gallery.splice(index, 1);
+      return { ...prev, galleryImages: gallery };
+    });
+    showToast('Изображение удалено');
+  };
+
   const handleUpdateGalleryImage = (
     projectId: string,
     index: number,
@@ -132,7 +183,7 @@ export default function App() {
       gallery[index] = imageUrl || '';
       return { ...prev, galleryImages: gallery };
     });
-    showToast(imageUrl ? 'Изображение галереи обновлено' : 'Сброшено на серый квадрат');
+    showToast(imageUrl ? 'Изображение обновлено' : 'Изображение удалено');
   };
 
   const currentCategoryProjects = projects.filter(
@@ -221,19 +272,27 @@ export default function App() {
         - Desktop: Strict 5x5 single-screen grid without scrolling (when on main page).
       */}
       <div
-        className={`w-full p-4 sm:p-6 md:p-8 lg:p-[40px] box-border ${
+        className={`w-full ${
           selectedProject
-            ? 'flex flex-col min-h-screen gap-4 sm:gap-6 lg:gap-[20px]'
-            : 'flex flex-col min-h-screen lg:h-full lg:grid lg:grid-cols-5 lg:grid-rows-5 gap-4 sm:gap-6 lg:gap-[20px]'
-        }`}
+            ? 'px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
+            : 'p-4 sm:p-6 md:p-8 lg:p-[40px] flex flex-col min-h-screen lg:h-full lg:grid lg:grid-cols-5 lg:grid-rows-5 gap-4 sm:gap-6 lg:gap-[20px]'
+        } box-border`}
       >
         {/* ROW 1: Header */}
         {selectedProject ? (
           <header className="w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3 shrink-0 pb-2">
             <div className="flex items-center justify-between w-full lg:w-auto">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight select-none">
-                ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
-              </h1>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedProject(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="group flex items-center gap-2 py-1 text-sm sm:text-base font-medium text-black hover:opacity-50 transition-opacity cursor-pointer select-none"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:-translate-x-1" />
+                <span>Назад</span>
+              </button>
               <AnimatedBurgerButton
                 isOpen={isMobileMenuOpen}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -283,15 +342,14 @@ export default function App() {
           <main className="w-full flex-1 min-h-0 pt-1 sm:pt-2">
             <ProjectDetailView
               project={selectedProject}
-              categories={CATEGORIES}
-              nextProject={nextProject}
               onClose={() => {
                 setSelectedProject(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onPrev={handlePrevProject}
               onNext={handleNextProject}
-              onUpdateImage={handleUpdateImage}
+              onAddGalleryImages={handleAddGalleryImages}
+              onRemoveGalleryImage={handleRemoveGalleryImage}
               onUpdateGalleryImage={handleUpdateGalleryImage}
             />
           </main>

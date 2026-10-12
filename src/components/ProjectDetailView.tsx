@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Project } from '../types';
-import { ArrowLeft, Upload, Trash2, ArrowUp } from 'lucide-react';
+import { ArrowLeft, Upload, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { compressImageFile } from '../utils/imageCompressor';
-import { resolveImageUrl } from '../utils/imageUtils';
+import { resolveImageUrl, getImageDimensions } from '../utils/imageUtils';
 
 interface ProjectDetailViewProps {
   project: Project;
@@ -14,6 +14,65 @@ interface ProjectDetailViewProps {
   onRemoveGalleryImage: (projectId: string, index: number) => void;
   onUpdateGalleryImage: (projectId: string, index: number, imageUrl: string | undefined) => void;
 }
+
+/**
+ * High-performance case study slide item.
+ * Fixes container proportions using CSS aspect-ratio and HTML width/height to eliminate
+ * Cumulative Layout Shift (CLS) and ensure lazy-loading only downloads images when scrolled into view.
+ */
+const CaseStudySlide: React.FC<{
+  projectTitle: string;
+  img: string;
+  idx: number;
+}> = ({ projectTitle, img, idx }) => {
+  const resolved = resolveImageUrl(img);
+  const dims = getImageDimensions(img);
+  const [dynamicRatio, setDynamicRatio] = useState<string | undefined>(undefined);
+
+  const effectiveRatio = dims?.aspectRatio || dynamicRatio;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.05, margin: '0px 0px -40px 0px' }}
+      transition={{
+        duration: 0.65,
+        ease: [0.22, 1, 0.36, 1],
+        delay: idx === 0 ? 0.05 : 0,
+      }}
+      className="w-full flex justify-center"
+    >
+      <div
+        className="w-full max-w-full overflow-hidden bg-white"
+        style={{
+          aspectRatio: effectiveRatio,
+        }}
+      >
+        <img
+          src={resolved}
+          alt={`${projectTitle} — слайд ${idx + 1}`}
+          width={dims?.width}
+          height={dims?.height}
+          loading={idx === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          onLoad={(e) => {
+            if (!dims) {
+              const { naturalWidth, naturalHeight } = e.currentTarget;
+              if (naturalWidth && naturalHeight) {
+                setDynamicRatio(`${naturalWidth} / ${naturalHeight}`);
+              }
+            }
+          }}
+          className="w-full h-auto object-contain block select-none pointer-events-none"
+          style={{
+            aspectRatio: effectiveRatio,
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
   project,
@@ -116,31 +175,14 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
       ) : (
         /* If images uploaded: seamless vertical showcase on pure white background */
         <div className="w-full flex flex-col gap-6 sm:gap-8 md:gap-10 pt-2 pb-16">
-          {images.map((img, idx) => {
-            const resolved = resolveImageUrl(img);
-            return (
-              <motion.div
-                key={`${project.id}-img-${idx}`}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.08, margin: '0px 0px -40px 0px' }}
-                transition={{
-                  duration: 0.75,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: idx < 2 ? idx * 0.15 : 0,
-                }}
-                className="w-full flex justify-center"
-              >
-                <img
-                  src={resolved}
-                  alt={`${project.title} — слайд ${idx + 1}`}
-                  className="w-full h-auto object-contain block select-none pointer-events-none"
-                  loading={idx < 2 ? 'eager' : 'lazy'}
-                  decoding="async"
-                />
-              </motion.div>
-            );
-          })}
+          {images.map((img, idx) => (
+            <CaseStudySlide
+              key={`${project.id}-img-${idx}`}
+              projectTitle={project.title}
+              img={img}
+              idx={idx}
+            />
+          ))}
 
           {/* Bottom navigation */}
           <div className="w-full pt-8 flex flex-col items-center">

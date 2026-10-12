@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Project, Category } from '../types';
 import { X, ChevronLeft, ChevronRight, Upload, Trash2 } from 'lucide-react';
+import { getImageDimensions } from '../utils/imageUtils';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -118,6 +119,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
               <img
                 src={project.imageUrl}
                 alt={project.title}
+                loading="lazy"
+                decoding="async"
+                width={getImageDimensions(project.imageUrl)?.width || 1172}
+                height={getImageDimensions(project.imageUrl)?.height || 732}
                 className="w-full h-full object-cover"
               />
             ) : (

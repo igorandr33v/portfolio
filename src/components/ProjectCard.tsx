@@ -1,6 +1,6 @@
 import React from 'react';
 import { Project } from '../types';
-import { resolveImageUrl } from '../utils/imageUtils';
+import { resolveImageUrl, getImageDimensions } from '../utils/imageUtils';
 
 interface ProjectCardProps {
   project: Project;
@@ -10,6 +10,7 @@ interface ProjectCardProps {
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) => {
   const resolvedSrc = resolveImageUrl(project.imageUrl);
   const hasImage = Boolean(resolvedSrc);
+  const dims = getImageDimensions(project.imageUrl);
 
   return (
     <article
@@ -31,6 +32,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
           src={resolvedSrc}
           alt={project.title}
           referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
+          width={dims?.width || 1172}
+          height={dims?.height || 732}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
       ) : (

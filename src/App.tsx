@@ -63,12 +63,12 @@ export default function App() {
           const match = parsed.find((p) => p.id === initP.id);
           if (!match) return initP;
 
-          // For Croydon (b-1), ensure the 8 case study images are always loaded
+          // For Croydon (b-1), ensure the updated 8 case study images (.webp) are always loaded
           if (initP.id === 'b-1') {
             const hasCompleteGallery =
               match.galleryImages &&
               match.galleryImages.length >= 8 &&
-              match.galleryImages.some((img) => img.includes('jersey.png'));
+              match.galleryImages.some((img) => img.includes('jersey.webp'));
 
             return {
               ...initP,

@@ -129,58 +129,21 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                   ease: [0.22, 1, 0.36, 1],
                   delay: idx < 2 ? idx * 0.15 : 0,
                 }}
-                className="relative group w-full flex justify-center"
+                className="w-full flex justify-center"
               >
                 <img
                   src={resolved}
                   alt={`${project.title} — слайд ${idx + 1}`}
-                  className="w-full h-auto object-contain block select-none"
+                  className="w-full h-auto object-contain block select-none pointer-events-none"
                   loading={idx < 2 ? 'eager' : 'lazy'}
                   decoding="async"
                 />
-
-                {/* Subtle hover controls for this image */}
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-black/70 backdrop-blur-sm px-2 py-1.5 rounded select-none">
-                  <input
-                    ref={(el) => {
-                      replaceInputRefs.current[idx] = el;
-                    }}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleReplaceUpload(idx)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => replaceInputRefs.current[idx]?.click()}
-                    className="px-2.5 py-1 bg-white text-black text-xs font-medium rounded hover:bg-neutral-100 transition-colors cursor-pointer"
-                  >
-                    Заменить
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onRemoveGalleryImage(project.id, idx)}
-                    className="p-1 text-white hover:text-red-400 transition-colors cursor-pointer"
-                    title="Удалить изображение"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
               </motion.div>
             );
           })}
 
-          {/* Action to add more images and bottom navigation */}
-          <div className="w-full pt-8 flex flex-col items-center gap-8">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-5 py-2.5 border border-neutral-300 hover:border-black text-xs sm:text-sm font-medium text-black transition-colors rounded cursor-pointer select-none"
-            >
-              <Upload className="w-4 h-4" />
-              <span>Добавить ещё изображения</span>
-            </button>
-
+          {/* Bottom navigation */}
+          <div className="w-full pt-8 flex flex-col items-center">
             <div className="w-full border-t border-neutral-200 pt-6 flex items-center justify-between select-none">
               <button
                 type="button"

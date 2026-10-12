@@ -39,25 +39,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
       )}
 
 
-      {/* Subtle modern hover overlay with project details */}
-      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out p-4 md:p-5 flex flex-col justify-between text-white pointer-events-none">
-        <div className="flex items-center justify-between">
-          <span className="text-xs md:text-sm font-medium tracking-wider text-white/90">
-            {project.number}
-          </span>
-          <span className="text-xs tracking-wide uppercase text-white/80">
-            {project.year}
-          </span>
-        </div>
-
-        <div>
-          <h4 className="text-sm md:text-base font-semibold leading-snug line-clamp-2 text-white">
-            {project.title}
-          </h4>
-          <p className="text-xs text-white/80 mt-1 line-clamp-1">
-            {project.client}
-          </p>
-        </div>
+      {/* Subtle modern hover overlay with project title only */}
+      <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out p-4 md:p-5 flex flex-col justify-end text-white pointer-events-none">
+        <h4 className="text-sm md:text-base font-semibold leading-snug line-clamp-2 text-white">
+          {project.title}
+        </h4>
       </div>
     </article>
   );

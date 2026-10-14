@@ -10,6 +10,8 @@ export interface ImageDimensions {
  * and allows browsers to correctly calculate scroll positions and apply native lazy-loading.
  */
 export const KNOWN_IMAGE_DIMENSIONS: Record<string, ImageDimensions> = {
+  'cover.webp': { width: 1172, height: 732, aspectRatio: '1172 / 732' },
+  'cover.png': { width: 1172, height: 732, aspectRatio: '1172 / 732' },
   'croydon-cover.png': { width: 1172, height: 732, aspectRatio: '1172 / 732' },
   'croydon-cover.webp': { width: 1172, height: 732, aspectRatio: '1172 / 732' },
   'old-new.webp': { width: 1841, height: 836, aspectRatio: '1841 / 836' },

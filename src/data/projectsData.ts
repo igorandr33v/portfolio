@@ -40,9 +40,9 @@ export const INITIAL_PROJECTS: Project[] = [
     title: 'Брендинг для футбольного клуба Croydon',
     shortTitle: 'CROYDON',
     subheading: 'FOOTBALL CLUB BRANDING & KIT DESIGN',
-    imageUrl: './images/croydon-cover.png',
+    imageUrl: './images/cover.webp',
     galleryImages: [
-      './images/croydon-cover.png',
+      './images/cover.webp',
       './images/old-new.webp',
       './images/logo-white.webp',
       './images/logo-black.webp',

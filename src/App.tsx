@@ -63,18 +63,25 @@ export default function App() {
           const match = parsed.find((p) => p.id === initP.id);
           if (!match) return initP;
 
-          // For Croydon (b-1), ensure the updated 8 case study images (.webp) are always loaded
+          // For Croydon (b-1), ensure the updated 8 case study images and new cover.webp preview are loaded
           if (initP.id === 'b-1') {
+            const isUserCustomUpload = match.imageUrl?.startsWith('data:');
+            const targetImageUrl = isUserCustomUpload ? match.imageUrl : initP.imageUrl;
+
+            const updatedGallery = match.galleryImages?.map((img) =>
+              img.includes('croydon-cover') ? './images/cover.webp' : img
+            );
+
             const hasCompleteGallery =
-              match.galleryImages &&
-              match.galleryImages.length >= 8 &&
-              match.galleryImages.some((img) => img.includes('jersey.webp'));
+              updatedGallery &&
+              updatedGallery.length >= 8 &&
+              updatedGallery.some((img) => img.includes('jersey.webp'));
 
             return {
               ...initP,
-              imageUrl: match.imageUrl || initP.imageUrl,
+              imageUrl: targetImageUrl,
               galleryImages: hasCompleteGallery
-                ? match.galleryImages
+                ? updatedGallery
                 : initP.galleryImages,
             };
           }

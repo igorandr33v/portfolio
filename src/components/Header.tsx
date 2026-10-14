@@ -24,19 +24,19 @@ export const Header: React.FC<HeaderProps> = ({ onCopyContact }) => {
           className="flex flex-wrap items-center gap-x-6 md:gap-x-8 lg:gap-x-10 gap-y-2 text-sm md:text-[15px] font-normal text-black"
         >
           <a
-            href="https://t.me/igor_andreev"
+            href="http://t.me/igorandr33v"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:opacity-50 transition-opacity duration-300 py-1"
+            className="hover:opacity-50 transition-opacity duration-300 py-1 cursor-pointer"
           >
             telegram
           </a>
 
           <a
-            href="https://instagram.com/igor.andreev"
+            href="https://www.instagram.com/igorandr33v/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:opacity-50 transition-opacity duration-300 py-1"
+            className="hover:opacity-50 transition-opacity duration-300 py-1 cursor-pointer"
           >
             instagram
           </a>

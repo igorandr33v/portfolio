@@ -221,22 +221,32 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectCategory = (categoryId: string) => {
+    setActiveCategoryId(categoryId);
+    setSelectedProject(null);
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+
   // Contacts block exactly as in desktop (adapted: wraps neatly on smaller screens)
   const renderContacts = () => (
     <div className="flex flex-wrap lg:flex-nowrap items-baseline justify-start lg:justify-end gap-x-5 sm:gap-x-6 md:gap-x-8 lg:gap-x-9 xl:gap-x-11 gap-y-1.5 text-sm sm:text-[14px] md:text-[15px] font-normal text-black pt-1 select-text">
       <a
-        href="https://t.me/igor_andreev"
+        href="http://t.me/igorandr33v"
         target="_blank"
         rel="noopener noreferrer"
-        className="hover:opacity-50 transition-opacity duration-300 whitespace-nowrap shrink-0"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
       >
         telegram
       </a>
       <a
-        href="https://instagram.com/igor.andreev"
+        href="https://www.instagram.com/igorandr33v/"
         target="_blank"
         rel="noopener noreferrer"
-        className="hover:opacity-50 transition-opacity duration-300 whitespace-nowrap shrink-0"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
       >
         instagram
       </a>
@@ -368,7 +378,7 @@ export default function App() {
               <CategoryNav
                 categories={CATEGORIES}
                 activeCategoryId={activeCategoryId}
-                onSelectCategory={(id) => setActiveCategoryId(id)}
+                onSelectCategory={handleSelectCategory}
               />
             </div>
 
@@ -425,10 +435,7 @@ export default function App() {
         onClose={() => setIsMobileMenuOpen(false)}
         categories={CATEGORIES}
         activeCategoryId={activeCategoryId}
-        onSelectCategory={(id) => {
-          setActiveCategoryId(id);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onSelectCategory={handleSelectCategory}
       />
 
       {/* Copy Notification Toast */}

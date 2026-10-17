@@ -33,6 +33,17 @@ body {
   background: #a3a3a3;
 }
 
+/* Completely hide scroll indicator */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* Custom designer cursor for desktop fine-pointer devices */
 @media (pointer: fine) {
   :root {

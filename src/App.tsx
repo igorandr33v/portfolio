@@ -14,6 +14,7 @@ import { Toast } from './components/Toast';
 import { Logo } from './components/Logo';
 import { MobileMenuDrawer } from './components/MobileMenuDrawer';
 import { AnimatedBurgerButton } from './components/AnimatedBurgerButton';
+import { GraphicGallery } from './components/GraphicGallery';
 import { ArrowLeft } from 'lucide-react';
 
 // Choreographed stagger container variants for the project grid
@@ -86,6 +87,15 @@ export default function App() {
             };
           }
 
+          // For Graphic Design (03), ensure the newly uploaded 9 images are loaded
+          if (initP.categoryId === 'graphic') {
+            return {
+              ...initP,
+              imageUrl: initP.imageUrl,
+              galleryImages: initP.galleryImages || [initP.imageUrl!],
+            };
+          }
+
           return {
             ...initP,
             imageUrl: match.imageUrl || initP.imageUrl,
@@ -102,7 +112,13 @@ export default function App() {
     return INITIAL_PROJECTS;
   });
 
-  const [activeCategoryId, setActiveCategoryId] = useState<string>('branding');
+  const [activeCategoryId, setActiveCategoryId] = useState<string>(() => {
+    try {
+      return localStorage.getItem('igor_andreev_active_category') || 'graphic';
+    } catch {
+      return 'graphic';
+    }
+  });
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -223,6 +239,11 @@ export default function App() {
 
   const handleSelectCategory = (categoryId: string) => {
     setActiveCategoryId(categoryId);
+    try {
+      localStorage.setItem('igor_andreev_active_category', categoryId);
+    } catch {
+      // ignore
+    }
     setSelectedProject(null);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -396,38 +417,51 @@ export default function App() {
               />
             </div>
 
-            {/* PROJECT CARDS GRID: Placed below tabs, arranged in 3 columns */}
+            {/* CONTENT AREA: Single horizontal scroll row for Graphic Design tab, 3-column grid for others */}
             <main className="w-full flex-1 min-h-0">
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeCategoryId}
-                  variants={gridContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="w-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-[20px]"
-                >
-                  {currentCategoryProjects.slice(0, 9).map((project) => (
-                    <motion.div
-                      key={project.id}
-                      variants={cardVariants}
-                      className="w-full min-h-[110px] sm:min-h-[140px] lg:min-h-0"
-                    >
-                      <ProjectCard
-                        project={project}
-                        onSelect={(p) => {
-                          setSelectedProject(p);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      />
-                    </motion.div>
-                  ))}
-                </motion.div>
+                {activeCategoryId === 'graphic' ? (
+                  <motion.div
+                    key="graphic-gallery"
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full"
+                  >
+                    <GraphicGallery />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={activeCategoryId}
+                    variants={gridContainerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="w-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-[20px]"
+                  >
+                    {currentCategoryProjects.slice(0, 9).map((project) => (
+                      <motion.div
+                        key={project.id}
+                        variants={cardVariants}
+                        className="w-full min-h-[110px] sm:min-h-[140px] lg:min-h-0"
+                      >
+                        <ProjectCard
+                          project={project}
+                          onSelect={(p) => {
+                            setSelectedProject(p);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
               </AnimatePresence>
             </main>
 
             {/* FOOTER: Vector Logo centered at bottom with 40px bottom offset */}
-            <footer className="mt-10 sm:mt-12 lg:mt-16 pb-[40px] flex items-center justify-center">
+            <footer className="mt-auto pt-6 pb-[40px] flex items-center justify-center">
               <div className="w-[120px] lg:w-[130px]">
                 <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
               </div>

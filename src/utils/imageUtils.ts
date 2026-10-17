@@ -28,6 +28,15 @@ export const KNOWN_IMAGE_DIMENSIONS: Record<string, ImageDimensions> = {
   'other.png': { width: 1841, height: 1395, aspectRatio: '1841 / 1395' },
   'stories.webp': { width: 1841, height: 962, aspectRatio: '1841 / 962' },
   'stories.png': { width: 1841, height: 962, aspectRatio: '1841 / 962' },
+  'renderia.webp': { width: 1743, height: 1255, aspectRatio: '1743 / 1255' },
+  'your-pizza.webp': { width: 3257, height: 1255, aspectRatio: '3257 / 1255' },
+  'ukniu-buklet.webp': { width: 3284, height: 1255, aspectRatio: '3284 / 1255' },
+  'cdek.webp': { width: 3359, height: 1255, aspectRatio: '3359 / 1255' },
+  'menu-coffee.webp': { width: 934, height: 1255, aspectRatio: '934 / 1255' },
+  'jazz.webp': { width: 931, height: 1255, aspectRatio: '931 / 1255' },
+  'your-real-side.webp': { width: 3101, height: 1255, aspectRatio: '3101 / 1255' },
+  'cvetmet.webp': { width: 699, height: 1255, aspectRatio: '699 / 1255' },
+  'holistima.webp': { width: 3312, height: 1255, aspectRatio: '3312 / 1255' },
 };
 
 export function getImageDimensions(url?: string): ImageDimensions | undefined {

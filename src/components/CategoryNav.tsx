@@ -6,16 +6,18 @@ interface CategoryNavProps {
   categories: Category[];
   activeCategoryId: string;
   onSelectCategory: (categoryId: string) => void;
+  className?: string;
 }
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
   categories,
   activeCategoryId,
   onSelectCategory,
+  className = '',
 }) => {
   return (
-    <nav aria-label="Категории проектов" className="w-full">
-      <ul className="flex flex-col space-y-3.5 md:space-y-4 lg:space-y-5">
+    <nav aria-label="Категории проектов" className={`w-full ${className}`}>
+      <ul className="flex flex-row flex-wrap items-center justify-start gap-x-6 sm:gap-x-8 lg:gap-x-10 gap-y-2">
         {categories.map((cat) => {
           const isActive = activeCategoryId === cat.id;
 
@@ -24,17 +26,17 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               <button
                 type="button"
                 onClick={() => onSelectCategory(cat.id)}
-                className={`relative inline-block text-left text-base md:text-lg lg:text-[19px] tracking-tight font-normal cursor-pointer select-none transition-opacity duration-200 ${
+                className={`relative inline-block text-left text-sm sm:text-base lg:text-[18px] tracking-tight cursor-pointer select-none transition-opacity duration-200 ${
                   isActive
-                    ? 'text-black opacity-100'
-                    : 'text-black/80 hover:text-black hover:opacity-100'
+                    ? 'text-black opacity-100 font-medium'
+                    : 'text-black/75 hover:text-black hover:opacity-100 font-normal'
                 }`}
               >
-                <span className="block">{cat.fullName}</span>
+                <span className="block whitespace-nowrap">{cat.fullName}</span>
                 {isActive && (
                   <motion.div
                     layoutId="category-underline"
-                    className="absolute left-0 right-0 -bottom-1 h-[1px] bg-black pointer-events-none"
+                    className="absolute left-0 right-0 -bottom-1 h-[1.5px] bg-black pointer-events-none"
                     transition={{
                       type: 'spring',
                       stiffness: 380,

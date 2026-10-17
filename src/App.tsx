@@ -277,56 +277,60 @@ export default function App() {
 
   return (
     <div
-      className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white ${
-        selectedProject
-          ? 'min-h-screen overflow-y-auto'
-          : 'min-h-screen overflow-y-auto lg:w-screen lg:h-screen lg:overflow-hidden select-none'
+      className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white min-h-screen overflow-y-auto ${
+        selectedProject ? '' : 'select-none'
       }`}
     >
       {/* 
         LAYOUT CONTAINER:
-        - Mobile: Natural vertical scroll, exact desktop elements and fonts adapted to screen width.
-        - Desktop: Strict 5x5 single-screen grid without scrolling (when on main page).
+        - Header at top (Title on left, Contacts on right)
+        - Horizontal tabs aligned to right edge
+        - Project covers below tabs arranged in 3 columns
+        - Vector Logo in footer
       */}
       <div
         className={`w-full ${
           selectedProject
-            ? 'px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
-            : 'p-4 sm:p-6 md:p-8 lg:p-[40px] flex flex-col min-h-screen lg:h-full lg:grid lg:grid-cols-5 lg:grid-rows-5 gap-4 sm:gap-6 lg:gap-[20px]'
+            ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
+            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col min-h-screen justify-between'
         } box-border`}
       >
-        {/* ROW 1: Header */}
+        {/* ROW 1: Header (Fixed at top so Back button stays in place upon scroll) */}
         {selectedProject ? (
-          <header className="w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3 shrink-0 pb-2">
-            <div className="flex items-center justify-between w-full lg:w-auto">
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedProject(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="group flex items-center gap-2 py-1 text-sm sm:text-base font-medium text-black hover:opacity-50 transition-opacity cursor-pointer select-none"
-              >
-                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:-translate-x-1" />
-                <span>Назад</span>
-              </button>
-              <AnimatedBurgerButton
-                isOpen={isMobileMenuOpen}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden"
-                aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
-              />
-            </div>
-            {/* Contacts on desktop and mobile */}
-            <div className="w-full lg:w-auto">
-              {renderContacts()}
-            </div>
-          </header>
+          <>
+            <header className="fixed top-0 left-0 right-0 z-50 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3 px-5 sm:px-8 lg:px-[40px] py-4 lg:py-5 bg-white/95 backdrop-blur-xs transition-colors">
+              <div className="flex items-center justify-between w-full lg:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedProject(null);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="group flex items-center gap-2 py-1 text-sm sm:text-base font-medium text-black hover:opacity-50 transition-opacity cursor-pointer select-none"
+                >
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:-translate-x-1" />
+                  <span>Назад</span>
+                </button>
+                <AnimatedBurgerButton
+                  isOpen={isMobileMenuOpen}
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="lg:hidden"
+                  aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
+                />
+              </div>
+              {/* Contacts on desktop and mobile */}
+              <div className="w-full lg:w-auto">
+                {renderContacts()}
+              </div>
+            </header>
+            {/* Spacer so the first slide is not obscured by the fixed header */}
+            <div className="w-full h-12 sm:h-14 lg:h-16 shrink-0 pointer-events-none" aria-hidden="true" />
+          </>
         ) : (
           <>
-            {/* Desktop: Title in Col 1-2 | Mobile: Header with Burger */}
-            <div className="lg:col-start-1 lg:col-span-2 lg:row-start-1 flex flex-col justify-start">
-              <div className="flex items-center justify-between w-full">
+            {/* Desktop & Mobile Header Bar */}
+            <header className="w-full flex items-baseline justify-between pb-3 sm:pb-5 lg:pb-0 shrink-0">
+              <div className="flex items-center justify-between w-full lg:w-auto">
                 <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight">
                   ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
                 </h1>
@@ -335,20 +339,30 @@ export default function App() {
                 <AnimatedBurgerButton
                   isOpen={isMobileMenuOpen}
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="lg:hidden"
+                  className="lg:hidden ml-4"
                   aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
                 />
               </div>
 
-              {/* Contacts directly on mobile under title using exact same text and font */}
-              <div className="lg:hidden w-full mt-2 sm:mt-3">
+              {/* Desktop: Contacts aligned to the right */}
+              <div className="hidden lg:flex items-center justify-end">
                 {renderContacts()}
               </div>
-            </div>
+            </header>
 
-            {/* Desktop: Contacts in Col 3-5 */}
-            <div className="hidden lg:flex lg:col-start-3 lg:col-span-3 lg:row-start-1 items-start justify-end">
-              {renderContacts()}
+            {/* Mobile Subheader (Contacts & Current Category) */}
+            <div className="lg:hidden w-full flex flex-col gap-2.5 pb-4">
+              <div className="w-full">
+                {renderContacts()}
+              </div>
+              <div className="pt-2 border-t border-neutral-100 flex items-center justify-between">
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-neutral-800 uppercase">
+                  {CATEGORIES.find((c) => c.id === activeCategoryId)?.fullName || 'Категория'}
+                </span>
+                <span className="text-xs text-neutral-400 font-mono">
+                  {currentCategoryProjects.length} проектов
+                </span>
+              </div>
             </div>
           </>
         )}
@@ -371,10 +385,10 @@ export default function App() {
             />
           </main>
         ) : (
-          /* MAIN GRID VIEW */
+          /* MAIN GRID VIEW (Desktop: Horizontal Tabs Left-Aligned + 3-col Grid Below) */
           <>
-            {/* DESKTOP ONLY: Row 2, Col 1 Navigation Tabs (01 / Брендинг, etc.) */}
-            <div className="hidden lg:flex lg:col-start-1 lg:row-start-2 lg:row-span-2 flex-col justify-start">
+            {/* DESKTOP TABS: Horizontal aligned to the left with 100px offset from header */}
+            <div className="hidden lg:flex w-full items-center justify-start mt-[100px] pb-6 shrink-0">
               <CategoryNav
                 categories={CATEGORIES}
                 activeCategoryId={activeCategoryId}
@@ -382,8 +396,8 @@ export default function App() {
               />
             </div>
 
-            {/* PROJECT CARDS GRID (Mobile: 1 col or 2 cols on tablet | Desktop: 3x3 strict grid) */}
-            <div className="w-full flex-1 min-h-0 lg:col-start-3 lg:col-span-3 lg:row-start-2 lg:row-span-3">
+            {/* PROJECT CARDS GRID: Placed below tabs, arranged in 3 columns */}
+            <main className="w-full flex-1 min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeCategoryId}
@@ -391,13 +405,13 @@ export default function App() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-3 gap-4 sm:gap-5 lg:gap-[20px]"
+                  className="w-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-[20px]"
                 >
                   {currentCategoryProjects.slice(0, 9).map((project) => (
                     <motion.div
                       key={project.id}
                       variants={cardVariants}
-                      className="w-full h-full min-h-[140px] lg:min-h-0"
+                      className="w-full min-h-[110px] sm:min-h-[140px] lg:min-h-0"
                     >
                       <ProjectCard
                         project={project}
@@ -410,21 +424,14 @@ export default function App() {
                   ))}
                 </motion.div>
               </AnimatePresence>
-            </div>
+            </main>
 
-            {/* DESKTOP ONLY: Row 5, Col 1 User Vector SVG Logo */}
-            <div className="hidden lg:flex lg:col-start-1 lg:row-start-5 items-end pb-1">
-              <div className="w-[130px]">
-                <Logo className="w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
+            {/* FOOTER: Vector Logo centered at bottom with 40px bottom offset */}
+            <footer className="mt-10 sm:mt-12 lg:mt-16 pb-[40px] flex items-center justify-center">
+              <div className="w-[120px] lg:w-[130px]">
+                <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
               </div>
-            </div>
-
-            {/* MOBILE ONLY: Vector Logo at bottom of projects */}
-            <div className="mt-8 pt-4 flex items-center justify-start lg:hidden pb-6">
-              <div className="w-[120px]">
-                <Logo className="w-[120px] h-auto text-black" />
-              </div>
-            </div>
+            </footer>
           </>
         )}
       </div>

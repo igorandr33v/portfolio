@@ -25,9 +25,9 @@ export const CATEGORIES: Category[] = [
   {
     id: 'web',
     number: '04',
-    name: 'Веб-дизайн',
-    fullName: '04 / Веб-дизайн',
-    sectionTitle: 'ВЕБ-ДИЗАЙН',
+    name: 'Диджитал',
+    fullName: '04 / Диджитал',
+    sectionTitle: 'ДИДЖИТАЛ',
   },
 ];
 

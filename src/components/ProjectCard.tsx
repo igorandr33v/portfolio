@@ -45,8 +45,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
 
 
       {/* Subtle modern hover overlay with project title only */}
-      <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out p-4 md:p-5 flex flex-col justify-end text-white pointer-events-none">
-        <h4 className="text-sm md:text-base font-semibold leading-snug line-clamp-2 text-white">
+      <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out p-3 sm:p-4 md:p-5 flex flex-col justify-end text-white pointer-events-none">
+        <h4 className="text-xs sm:text-sm md:text-base font-semibold leading-snug line-clamp-2 text-white">
           {project.title}
         </h4>
       </div>

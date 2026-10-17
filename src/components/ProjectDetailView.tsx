@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Project } from '../types';
-import { ArrowLeft, Upload, ArrowUp } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Logo } from './Logo';
 import { compressImageFile } from '../utils/imageCompressor';
 import { resolveImageUrl, getImageDimensions } from '../utils/imageUtils';
 
@@ -127,10 +128,6 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
     if (e.target) e.target.value = '';
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const images = (project.galleryImages || []).filter(Boolean);
 
   return (
@@ -184,26 +181,10 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             />
           ))}
 
-          {/* Bottom navigation */}
-          <div className="w-full pt-8 flex flex-col items-center">
-            <div className="w-full border-t border-neutral-200 pt-6 flex items-center justify-between select-none">
-              <button
-                type="button"
-                onClick={onClose}
-                className="group flex items-center gap-2 text-sm sm:text-base font-medium text-black hover:opacity-50 transition-opacity cursor-pointer"
-              >
-                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:-translate-x-1" />
-                <span>Назад</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-black transition-colors cursor-pointer"
-              >
-                <span>Наверх</span>
-                <ArrowUp className="w-3.5 h-3.5" />
-              </button>
+          {/* Bottom Centered Logo */}
+          <div className="w-full pt-14 sm:pt-16 pb-12 flex justify-center items-center select-none">
+            <div className="w-[120px] sm:w-[130px]">
+              <Logo className="w-[120px] sm:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
             </div>
           </div>
         </div>

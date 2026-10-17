@@ -110,8 +110,43 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </ul>
             </nav>
 
+            {/* Drawer Contacts */}
+            <div className="pt-6 border-t border-neutral-100 flex flex-col gap-2 text-xs sm:text-sm font-normal text-black select-text">
+              <div className="flex items-center gap-4 pb-1">
+                <a
+                  href="http://t.me/igorandr33v"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-50 transition-opacity font-medium cursor-pointer"
+                >
+                  telegram
+                </a>
+                <span className="text-neutral-300">·</span>
+                <a
+                  href="https://www.instagram.com/igorandr33v/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-50 transition-opacity font-medium cursor-pointer"
+                >
+                  instagram
+                </a>
+              </div>
+              <a
+                href="mailto:igor.andreev.1997@gmail.com"
+                className="hover:opacity-50 transition-opacity text-neutral-600 truncate cursor-pointer"
+              >
+                igor.andreev.1997@gmail.com
+              </a>
+              <a
+                href="tel:+79097023881"
+                className="hover:opacity-50 transition-opacity text-neutral-600 cursor-pointer"
+              >
+                8 909 702 3881
+              </a>
+            </div>
+
             {/* Bottom Logo */}
-            <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
+            <div className="pt-5 border-t border-neutral-100 flex items-center justify-between">
               <div className="w-[110px]">
                 <Logo className="w-[110px] h-auto text-black" />
               </div>

@@ -298,8 +298,12 @@ export default function App() {
 
   return (
     <div
-      className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white min-h-screen overflow-y-auto ${
-        selectedProject ? '' : 'select-none'
+      className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white ${
+        selectedProject
+          ? 'min-h-screen overflow-y-auto'
+          : activeCategoryId === 'graphic'
+          ? 'h-dvh max-h-dvh overflow-hidden select-none'
+          : 'min-h-screen overflow-y-auto select-none'
       }`}
     >
       {/* 
@@ -313,7 +317,9 @@ export default function App() {
         className={`w-full ${
           selectedProject
             ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
-            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col min-h-screen justify-between'
+            : activeCategoryId === 'graphic'
+            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-8 flex flex-col h-dvh max-h-dvh overflow-hidden'
+            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-8 flex flex-col min-h-screen'
         } box-border`}
       >
         {/* ROW 1: Header (Fixed at top so Back button stays in place upon scroll) */}
@@ -371,19 +377,9 @@ export default function App() {
               </div>
             </header>
 
-            {/* Mobile Subheader (Contacts & Current Category) */}
-            <div className="lg:hidden w-full flex flex-col gap-2.5 pb-4">
-              <div className="w-full">
-                {renderContacts()}
-              </div>
-              <div className="pt-2 border-t border-neutral-100 flex items-center justify-between">
-                <span className="text-xs sm:text-sm font-semibold tracking-tight text-neutral-800 uppercase">
-                  {CATEGORIES.find((c) => c.id === activeCategoryId)?.fullName || 'Категория'}
-                </span>
-                <span className="text-xs text-neutral-400 font-mono">
-                  {currentCategoryProjects.length} проектов
-                </span>
-              </div>
+            {/* Mobile Subheader (Contacts) */}
+            <div className="lg:hidden w-full pb-3 shrink-0">
+              {renderContacts()}
             </div>
           </>
         )}
@@ -417,8 +413,8 @@ export default function App() {
               />
             </div>
 
-            {/* CONTENT AREA: Single horizontal scroll row for Graphic Design tab, 3-column grid for others */}
-            <main className="w-full flex-1 min-h-0">
+            {/* CONTENT AREA: Vertical scroll on mobile & horizontal on desktop for Graphic Design tab, 3-column grid for others */}
+            <main className="w-full flex-1 min-h-0 flex flex-col">
               <AnimatePresence mode="wait">
                 {activeCategoryId === 'graphic' ? (
                   <motion.div
@@ -427,7 +423,7 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-full"
+                    className="w-full h-full flex-1 min-h-0 flex flex-col"
                   >
                     <GraphicGallery />
                   </motion.div>
@@ -459,13 +455,6 @@ export default function App() {
                 )}
               </AnimatePresence>
             </main>
-
-            {/* FOOTER: Vector Logo centered at bottom with 40px bottom offset */}
-            <footer className="mt-auto pt-6 pb-[40px] flex items-center justify-center">
-              <div className="w-[120px] lg:w-[130px]">
-                <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
-              </div>
-            </footer>
           </>
         )}
       </div>

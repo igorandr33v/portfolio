@@ -9,20 +9,28 @@ interface GraphicGalleryProps {
 
 // 3 identical sets of 9 works to enable seamless infinite looping
 const REPEAT_SETS = 3;
+const MOBILE_BREAKPOINT = 1024;
 
 export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false
+  );
 
   // Linear interpolation and infinite loop refs
+  const isMobileRef = useRef<boolean>(
+    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false
+  );
   const currentScrollRef = useRef(0);
   const targetScrollRef = useRef(0);
-  const singleSetWidthRef = useRef(0);
+  const singleSetSizeRef = useRef(0);
   const rafIdRef = useRef<number | null>(null);
+  const isTouchingRef = useRef(false);
 
   // Drag-to-scroll refs
   const isDraggingRef = useRef(false);
-  const dragStartXRef = useRef(0);
+  const dragStartPosRef = useRef(0);
   const dragStartScrollRef = useRef(0);
   const dragDistanceRef = useRef(0);
   const [isCursorGrabbing, setIsCursorGrabbing] = useState(false);
@@ -37,40 +45,72 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
     ).flat();
   }, []);
 
-  // Measure the exact width of a single 9-item set
-  const updateSingleSetWidth = useCallback(() => {
+  // Measure the exact size (width on desktop, height on mobile) of a single 9-item set
+  const updateSingleSetSize = useCallback(() => {
     const container = containerRef.current;
-    if (!container || container.children.length < GRAPHIC_WORKS.length * 2) return;
+    if (!container || container.children.length < GRAPHIC_WORKS.length * 2) return 0;
 
     const firstItem = container.children[0] as HTMLElement;
     const secondSetFirstItem = container.children[GRAPHIC_WORKS.length] as HTMLElement;
 
     if (firstItem && secondSetFirstItem) {
-      const measured = secondSetFirstItem.offsetLeft - firstItem.offsetLeft;
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+      const measured = mobile
+        ? secondSetFirstItem.offsetTop - firstItem.offsetTop
+        : secondSetFirstItem.offsetLeft - firstItem.offsetLeft;
+
       if (measured > 0) {
-        singleSetWidthRef.current = measured;
+        singleSetSizeRef.current = measured;
+        return measured;
       }
     }
+    return 0;
   }, []);
 
-  // Set initial position to middle set on mount
+  // Initialize and handle viewport mode switches
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Wait for images layout to stabilize
-    const timer = setTimeout(() => {
-      updateSingleSetWidth();
-      const setWidth = singleSetWidthRef.current;
-      if (setWidth > 0) {
-        container.scrollLeft = setWidth;
-        currentScrollRef.current = setWidth;
-        targetScrollRef.current = setWidth;
+    const initScrollPosition = () => {
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+      isMobileRef.current = mobile;
+      setIsMobile(mobile);
+
+      const setSize = updateSingleSetSize();
+      if (setSize > 0) {
+        if (mobile) {
+          container.scrollLeft = 0;
+          container.scrollTop = setSize;
+        } else {
+          container.scrollTop = 0;
+          container.scrollLeft = setSize;
+        }
+        currentScrollRef.current = setSize;
+        targetScrollRef.current = setSize;
       }
-    }, 100);
+    };
+
+    const timer = setTimeout(initScrollPosition, 80);
 
     const handleResize = () => {
-      updateSingleSetWidth();
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+      const modeChanged = mobile !== isMobileRef.current;
+      isMobileRef.current = mobile;
+      setIsMobile(mobile);
+
+      const setSize = updateSingleSetSize();
+      if (modeChanged && setSize > 0 && containerRef.current) {
+        if (mobile) {
+          containerRef.current.scrollLeft = 0;
+          containerRef.current.scrollTop = setSize;
+        } else {
+          containerRef.current.scrollTop = 0;
+          containerRef.current.scrollLeft = setSize;
+        }
+        currentScrollRef.current = setSize;
+        targetScrollRef.current = setSize;
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -78,36 +118,40 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
       clearTimeout(timer);
       window.removeEventListener('resize', handleResize);
     };
-  }, [updateSingleSetWidth]);
+  }, [updateSingleSetSize]);
 
-  // Smooth lerp animation loop (smooth scrolling with inertia)
+  // Smooth lerp animation loop (smooth scrolling with inertia for both horizontal and vertical)
   useEffect(() => {
     const animate = () => {
-      if (!isDraggingRef.current && containerRef.current) {
+      if (!isDraggingRef.current && !isTouchingRef.current && containerRef.current) {
         const diff = targetScrollRef.current - currentScrollRef.current;
 
         // Smooth ease interpolation toward target
         if (Math.abs(diff) > 0.15) {
-          currentScrollRef.current += diff * 0.11; // Buttery smooth deceleration
+          currentScrollRef.current += diff * 0.11;
         } else {
           currentScrollRef.current = targetScrollRef.current;
         }
 
-        const setWidth = singleSetWidthRef.current;
-        if (setWidth > 0) {
+        const setSize = singleSetSizeRef.current;
+        if (setSize > 0) {
           // Seamless wrap-around forward
-          if (currentScrollRef.current >= 2 * setWidth) {
-            currentScrollRef.current -= setWidth;
-            targetScrollRef.current -= setWidth;
+          if (currentScrollRef.current >= 2 * setSize) {
+            currentScrollRef.current -= setSize;
+            targetScrollRef.current -= setSize;
           }
           // Seamless wrap-around backward
-          else if (currentScrollRef.current < setWidth * 0.5) {
-            currentScrollRef.current += setWidth;
-            targetScrollRef.current += setWidth;
+          else if (currentScrollRef.current < setSize * 0.5) {
+            currentScrollRef.current += setSize;
+            targetScrollRef.current += setSize;
           }
         }
 
-        containerRef.current.scrollLeft = currentScrollRef.current;
+        if (isMobileRef.current) {
+          containerRef.current.scrollTop = currentScrollRef.current;
+        } else {
+          containerRef.current.scrollLeft = currentScrollRef.current;
+        }
       }
 
       rafIdRef.current = requestAnimationFrame(animate);
@@ -133,6 +177,9 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
       // Trigger scroll when cursor is over the images or anywhere below the component
       if (e.clientY >= rect.top - 5) {
         e.preventDefault();
+        if (singleSetSizeRef.current === 0) {
+          updateSingleSetSize();
+        }
         const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
         targetScrollRef.current += delta * 1.15;
       }
@@ -142,7 +189,7 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
     return () => {
       window.removeEventListener('wheel', onWheel);
     };
-  }, [activeLightboxIndex]);
+  }, [activeLightboxIndex, updateSingleSetSize]);
 
   // Window-level mouse move and mouse up for fluid dragging across the entire page
   useEffect(() => {
@@ -150,26 +197,32 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
       if (!isDraggingRef.current || !containerRef.current) return;
       e.preventDefault();
 
-      const walk = e.pageX - dragStartXRef.current;
+      const currentPos = isMobileRef.current ? e.pageY : e.pageX;
+      const walk = currentPos - dragStartPosRef.current;
       dragDistanceRef.current += Math.abs(walk);
 
       let nextScroll = dragStartScrollRef.current - walk;
-      const setWidth = singleSetWidthRef.current;
+      const setSize = singleSetSizeRef.current;
 
       // Wrap during drag if passing boundary
-      if (setWidth > 0) {
-        if (nextScroll >= 2 * setWidth) {
-          nextScroll -= setWidth;
-          dragStartScrollRef.current -= setWidth;
-        } else if (nextScroll < setWidth * 0.5) {
-          nextScroll += setWidth;
-          dragStartScrollRef.current += setWidth;
+      if (setSize > 0) {
+        if (nextScroll >= 2 * setSize) {
+          nextScroll -= setSize;
+          dragStartScrollRef.current -= setSize;
+        } else if (nextScroll < setSize * 0.5) {
+          nextScroll += setSize;
+          dragStartScrollRef.current += setSize;
         }
       }
 
       currentScrollRef.current = nextScroll;
       targetScrollRef.current = nextScroll;
-      containerRef.current.scrollLeft = nextScroll;
+
+      if (isMobileRef.current) {
+        containerRef.current.scrollTop = nextScroll;
+      } else {
+        containerRef.current.scrollLeft = nextScroll;
+      }
     };
 
     const handleWindowMouseUp = () => {
@@ -193,16 +246,34 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
     const container = containerRef.current;
     if (!container) return;
 
-    const setWidth = singleSetWidthRef.current;
-    if (setWidth > 0) {
-      if (container.scrollLeft >= 2 * setWidth) {
-        container.scrollLeft -= setWidth;
-        currentScrollRef.current = container.scrollLeft;
-        targetScrollRef.current = container.scrollLeft;
-      } else if (container.scrollLeft < setWidth * 0.5) {
-        container.scrollLeft += setWidth;
-        currentScrollRef.current = container.scrollLeft;
-        targetScrollRef.current = container.scrollLeft;
+    const setSize = singleSetSizeRef.current || updateSingleSetSize();
+    if (setSize > 0) {
+      if (isMobileRef.current) {
+        if (container.scrollTop >= 2 * setSize) {
+          container.scrollTop -= setSize;
+          currentScrollRef.current = container.scrollTop;
+          targetScrollRef.current = container.scrollTop;
+        } else if (container.scrollTop < setSize * 0.5) {
+          container.scrollTop += setSize;
+          currentScrollRef.current = container.scrollTop;
+          targetScrollRef.current = container.scrollTop;
+        } else if (isTouchingRef.current) {
+          currentScrollRef.current = container.scrollTop;
+          targetScrollRef.current = container.scrollTop;
+        }
+      } else {
+        if (container.scrollLeft >= 2 * setSize) {
+          container.scrollLeft -= setSize;
+          currentScrollRef.current = container.scrollLeft;
+          targetScrollRef.current = container.scrollLeft;
+        } else if (container.scrollLeft < setSize * 0.5) {
+          container.scrollLeft += setSize;
+          currentScrollRef.current = container.scrollLeft;
+          targetScrollRef.current = container.scrollLeft;
+        } else if (isTouchingRef.current) {
+          currentScrollRef.current = container.scrollLeft;
+          targetScrollRef.current = container.scrollLeft;
+        }
       }
     }
   };
@@ -211,19 +282,17 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || e.button !== 0) return;
 
+    if (singleSetSizeRef.current === 0) {
+      updateSingleSetSize();
+    }
+
     isDraggingRef.current = true;
-    dragStartXRef.current = e.pageX;
-    dragStartScrollRef.current = containerRef.current.scrollLeft;
+    dragStartPosRef.current = isMobileRef.current ? e.pageY : e.pageX;
+    dragStartScrollRef.current = isMobileRef.current
+      ? containerRef.current.scrollTop
+      : containerRef.current.scrollLeft;
     dragDistanceRef.current = 0;
     setIsCursorGrabbing(true);
-  };
-
-  // Drag end
-  const handleMouseUpOrLeave = () => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      setIsCursorGrabbing(false);
-    }
   };
 
   // Card click: open lightbox (only if not dragged)
@@ -267,21 +336,29 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
     activeLightboxIndex !== null ? GRAPHIC_WORKS[activeLightboxIndex] : null;
 
   return (
-    <div className="relative w-full flex flex-col">
+    <div className="relative w-full h-full flex-1 min-h-0 flex flex-col">
       {/* 
-        Horizontal single-row gallery container:
-        - Seamless infinite scroll (images loop infinitely)
-        - Silky smooth inertia-based wheel scrolling
-        - No numbering labels
-        - No hover zoom on images
-        - Scroll indicator completely hidden
+        Gallery container:
+        - Mobile (< lg): vertical scroll (flex-col overflow-y-auto), fills height down to 10px above the logo
+        - Desktop (lg+): horizontal scroll (lg:flex-row lg:overflow-x-auto), fills height down to 10px above the logo
+        - Seamless infinite scroll in both orientations
+        - No numbering labels, no hover zoom, no scrollbar indicator
       */}
-      <div className="relative w-full">
+      <div className="relative w-full h-full flex-1 min-h-0">
         <div
           ref={containerRef}
           onScroll={handleScroll}
           onMouseDown={handleMouseDown}
-          className={`w-full flex flex-row flex-nowrap items-stretch gap-[10px] overflow-x-auto select-none py-1 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+          onTouchStart={() => {
+            isTouchingRef.current = true;
+          }}
+          onTouchEnd={() => {
+            isTouchingRef.current = false;
+          }}
+          onTouchCancel={() => {
+            isTouchingRef.current = false;
+          }}
+          className={`w-full h-full flex flex-col lg:flex-row flex-nowrap items-stretch gap-[10px] overflow-y-auto lg:overflow-y-hidden overflow-x-hidden lg:overflow-x-auto select-none no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
             isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'
           }`}
           style={{
@@ -307,7 +384,7 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
                 tabIndex={0}
                 role="button"
                 aria-label={work.title}
-                className="relative shrink-0 h-[240px] sm:h-[280px] md:h-[330px] lg:h-[370px] xl:h-[390px] overflow-hidden group cursor-pointer focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
+                className="relative shrink-0 w-full lg:w-auto lg:h-full overflow-hidden group cursor-pointer focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
                 style={{
                   aspectRatio: `${work.width} / ${work.height}`,
                 }}
@@ -320,8 +397,22 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
                   height={work.height}
                   loading={index < 12 ? 'eager' : 'lazy'}
                   decoding="async"
-                  onLoad={updateSingleSetWidth}
-                  className="w-full h-full object-cover block select-none pointer-events-none"
+                  onLoad={() => {
+                    const prevSize = singleSetSizeRef.current;
+                    const newSize = updateSingleSetSize();
+                    if (prevSize === 0 && newSize > 0 && containerRef.current) {
+                      if (isMobileRef.current) {
+                        containerRef.current.scrollTop = newSize;
+                      } else {
+                        containerRef.current.scrollLeft = newSize;
+                      }
+                      currentScrollRef.current = newSize;
+                      targetScrollRef.current = newSize;
+                    }
+                  }}
+                  className={`block select-none pointer-events-none object-cover ${
+                    isMobile ? 'w-full h-auto' : 'w-full h-full'
+                  }`}
                   style={{
                     aspectRatio: `${work.width} / ${work.height}`,
                   }}

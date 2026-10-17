@@ -318,7 +318,7 @@ export default function App() {
           selectedProject
             ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
             : activeCategoryId === 'graphic'
-            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-8 flex flex-col h-dvh max-h-dvh overflow-hidden'
+            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden justify-between'
             : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-8 flex flex-col min-h-screen'
         } box-border`}
       >
@@ -455,6 +455,13 @@ export default function App() {
                 )}
               </AnimatePresence>
             </main>
+
+            {/* FOOTER: Vector Logo centered at bottom, 40px from images component edge on desktop, 40px from bottom on desktop */}
+            <footer className="mt-auto pt-[10px] lg:pt-[40px] pb-[10px] lg:pb-[40px] shrink-0 flex items-center justify-center">
+              <div className="w-[120px] lg:w-[130px]">
+                <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
+              </div>
+            </footer>
           </>
         )}
       </div>

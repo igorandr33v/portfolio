@@ -37,6 +37,14 @@ export const KNOWN_IMAGE_DIMENSIONS: Record<string, ImageDimensions> = {
   'your-real-side.webp': { width: 3101, height: 1255, aspectRatio: '3101 / 1255' },
   'cvetmet.webp': { width: 699, height: 1255, aspectRatio: '699 / 1255' },
   'holistima.webp': { width: 3312, height: 1255, aspectRatio: '3312 / 1255' },
+  'renderia-1.webp': { width: 1614, height: 1127, aspectRatio: '1614 / 1127' },
+  'your-pizza-1.webp': { width: 3128, height: 1127, aspectRatio: '3128 / 1127' },
+  'ukniu-buklet-1.webp': { width: 3156, height: 1127, aspectRatio: '3156 / 1127' },
+  'cdek-1.webp': { width: 3217, height: 1115, aspectRatio: '3217 / 1115' },
+  'menu-coffee-1.webp': { width: 805, height: 1127, aspectRatio: '805 / 1127' },
+  'jazz-1.webp': { width: 803, height: 1127, aspectRatio: '803 / 1127' },
+  'your-real-side-1.webp': { width: 2972, height: 1127, aspectRatio: '2972 / 1127' },
+  'holistima-1.webp': { width: 3183, height: 1127, aspectRatio: '3183 / 1127' },
 };
 
 export function getImageDimensions(url?: string): ImageDimensions | undefined {

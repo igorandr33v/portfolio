@@ -7,7 +7,7 @@ interface GraphicGalleryProps {
   onSelectProject?: (project: any) => void;
 }
 
-// 3 identical sets of 9 works to enable seamless infinite looping
+// 3 identical sets of 8 works to enable seamless infinite looping
 const REPEAT_SETS = 3;
 const MOBILE_BREAKPOINT = 1024;
 
@@ -358,7 +358,7 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
           onTouchCancel={() => {
             isTouchingRef.current = false;
           }}
-          className={`w-full h-full flex flex-col lg:flex-row flex-nowrap items-stretch gap-[10px] overflow-y-auto lg:overflow-y-hidden overflow-x-hidden lg:overflow-x-auto select-none no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+          className={`w-full h-full flex flex-col lg:flex-row flex-nowrap items-stretch gap-[10px] lg:gap-[40px] overflow-y-auto lg:overflow-y-hidden overflow-x-hidden lg:overflow-x-auto select-none no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
             isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'
           }`}
           style={{
@@ -441,11 +441,17 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-6 md:p-8"
             onClick={handleCloseLightbox}
           >
-            {/* Top Bar with close button only */}
+            {/* Top Bar with pure title (NO numbering) and close button */}
             <div
-              className="absolute top-0 left-0 right-0 px-5 sm:px-8 py-5 flex items-center justify-end text-white z-10"
+              className="absolute top-0 left-0 right-0 px-5 sm:px-8 py-5 flex items-center justify-between text-white z-10"
               onClick={(e) => e.stopPropagation()}
             >
+              <div className="flex items-center">
+                <span className="text-xs sm:text-sm font-semibold tracking-wide uppercase">
+                  {activeWork.title}
+                </span>
+              </div>
+
               <button
                 type="button"
                 onClick={handleCloseLightbox}

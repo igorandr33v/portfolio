@@ -87,13 +87,9 @@ export default function App() {
             };
           }
 
-          // For Graphic Design (03), ensure the newly uploaded 9 images are loaded
+          // For Graphic Design (03), ensure the newly uploaded images are loaded
           if (initP.categoryId === 'graphic') {
-            return {
-              ...initP,
-              imageUrl: initP.imageUrl,
-              galleryImages: initP.galleryImages || [initP.imageUrl!],
-            };
+            return initP;
           }
 
           return {
@@ -254,6 +250,38 @@ export default function App() {
 
 
 
+  const renderContacts = () => (
+    <div className="flex flex-nowrap items-baseline gap-x-6 text-[15px] font-normal text-black select-text">
+      <a
+        href="http://t.me/igorandr33v"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
+      >
+        telegram
+      </a>
+      <a
+        href="https://www.instagram.com/igorandr33v/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
+      >
+        instagram
+      </a>
+      <button
+        type="button"
+        onClick={() => {
+          navigator.clipboard?.writeText('igor.andreev.1997@gmail.com');
+          showToast('Email скопирован: igor.andreev.1997@gmail.com');
+        }}
+        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0 text-left"
+        title="Нажмите, чтобы скопировать"
+      >
+        igor.andreev.1997@gmail.com
+      </button>
+    </div>
+  );
+
   return (
     <div
       className={`relative w-full bg-white text-black font-sans selection:bg-neutral-900 selection:text-white ${
@@ -277,7 +305,7 @@ export default function App() {
             ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
             : activeCategoryId === 'graphic'
             ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden lg:justify-between'
-            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-8 flex flex-col min-h-screen'
+            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-0 flex flex-col min-h-screen lg:justify-between'
         } box-border`}
       >
         {/* ROW 1: Header (Fixed at top so Back button stays in place upon scroll) */}
@@ -303,7 +331,9 @@ export default function App() {
                   aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
                 />
               </div>
-
+              <div className="hidden lg:flex items-center justify-end">
+                {renderContacts()}
+              </div>
             </header>
             {/* Spacer so the first slide is not obscured by the fixed header */}
             <div className="w-full h-12 sm:h-14 lg:h-16 shrink-0 pointer-events-none" aria-hidden="true" />
@@ -314,7 +344,7 @@ export default function App() {
             <header className="w-full flex items-baseline justify-between pb-3 sm:pb-5 lg:pb-0 shrink-0">
               <div className="flex items-center justify-between w-full lg:w-auto">
                 <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight">
-                  ГРАФИЧЕСКИЙ<br />И БРЕНД-ДИЗАЙНЕР
+                  ГРАФИЧЕСКИЙ<br className="lg:hidden" /> И БРЕНД-ДИЗАЙНЕР
                 </h1>
 
                 {/* Mobile Burger Menu Button (Top Right, hidden on desktop) */}
@@ -326,6 +356,10 @@ export default function App() {
                 />
               </div>
 
+              {/* Desktop: Contacts aligned to the right */}
+              <div className="hidden lg:flex items-center justify-end">
+                {renderContacts()}
+              </div>
             </header>
           </>
         )}

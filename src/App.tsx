@@ -428,11 +428,14 @@ export default function App() {
                       <motion.div
                         key={project.id}
                         variants={cardVariants}
-                        className="w-full min-h-[110px] sm:min-h-[140px] lg:min-h-0"
+                        className={`w-full ${
+                          project.categoryId === 'web' ? 'col-span-2 lg:col-span-1' : ''
+                        } min-h-[110px] sm:min-h-[140px] lg:min-h-0`}
                       >
                         <ProjectCard
                           project={project}
                           onSelect={(p) => {
+                            if (p.categoryId === 'web') return;
                             setSelectedProject(p);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
@@ -445,7 +448,7 @@ export default function App() {
             </main>
 
             {/* FOOTER: Vector Logo centered at bottom, 40px from images component edge on desktop, 40px from bottom on desktop */}
-            <footer className="flex mt-auto pt-[16px] lg:pt-[40px] pb-[40px] shrink-0 items-center justify-center">
+            <footer className="hidden lg:flex mt-auto pt-[40px] pb-[40px] shrink-0 items-center justify-center">
               <div className="w-[120px] lg:w-[130px]">
                 <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
               </div>

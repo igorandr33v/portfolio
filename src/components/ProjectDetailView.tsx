@@ -182,7 +182,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
           ))}
 
           {/* Bottom Centered Logo */}
-          <div className="w-full pt-14 sm:pt-16 pb-12 flex justify-center items-center select-none">
+          <div className="hidden lg:flex w-full pt-14 sm:pt-16 pb-12 justify-center items-center select-none">
             <div className="w-[120px] sm:w-[130px]">
               <Logo className="w-[120px] sm:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
             </div>

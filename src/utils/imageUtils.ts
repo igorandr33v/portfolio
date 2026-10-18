@@ -51,6 +51,7 @@ export const KNOWN_IMAGE_DIMENSIONS: Record<string, ImageDimensions> = {
   'opora.webp': { width: 507, height: 172, aspectRatio: '507 / 172' },
   'smysly.webp': { width: 506, height: 171, aspectRatio: '506 / 171' },
   'sovet-nygani.webp': { width: 506, height: 171, aspectRatio: '506 / 171' },
+  'group-vk.webp': { width: 1604, height: 812, aspectRatio: '1604 / 812' },
 };
 
 export function getImageDimensions(url?: string): ImageDimensions | undefined {

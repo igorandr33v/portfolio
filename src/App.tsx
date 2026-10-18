@@ -252,49 +252,7 @@ export default function App() {
     });
   };
 
-  // Contacts block exactly as in desktop (adapted: wraps neatly on smaller screens)
-  const renderContacts = () => (
-    <div className="flex flex-wrap lg:flex-nowrap items-baseline justify-start lg:justify-end gap-x-5 sm:gap-x-6 md:gap-x-8 lg:gap-x-9 xl:gap-x-11 gap-y-1.5 text-sm sm:text-[14px] md:text-[15px] font-normal text-black pt-1 select-text">
-      <a
-        href="http://t.me/igorandr33v"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
-      >
-        telegram
-      </a>
-      <a
-        href="https://www.instagram.com/igorandr33v/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0"
-      >
-        instagram
-      </a>
-      <button
-        type="button"
-        onClick={() => {
-          navigator.clipboard?.writeText('igor.andreev.1997@gmail.com');
-          showToast('Email скопирован: igor.andreev.1997@gmail.com');
-        }}
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0 text-left"
-        title="Нажмите, чтобы скопировать"
-      >
-        igor.andreev.1997@gmail.com
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          navigator.clipboard?.writeText('8 909 702 3881');
-          showToast('Телефон скопирован: 8 909 702 3881');
-        }}
-        className="hover:opacity-50 transition-opacity duration-300 cursor-pointer whitespace-nowrap shrink-0 text-left"
-        title="Нажмите, чтобы скопировать"
-      >
-        8 909 702 3881
-      </button>
-    </div>
-  );
+
 
   return (
     <div
@@ -318,7 +276,7 @@ export default function App() {
           selectedProject
             ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
             : activeCategoryId === 'graphic'
-            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden justify-between'
+            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden lg:justify-between'
             : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-8 flex flex-col min-h-screen'
         } box-border`}
       >
@@ -345,10 +303,7 @@ export default function App() {
                   aria-label={isMobileMenuOpen ? "Закрыть меню разделов" : "Открыть меню разделов"}
                 />
               </div>
-              {/* Contacts on desktop and mobile */}
-              <div className="w-full lg:w-auto">
-                {renderContacts()}
-              </div>
+
             </header>
             {/* Spacer so the first slide is not obscured by the fixed header */}
             <div className="w-full h-12 sm:h-14 lg:h-16 shrink-0 pointer-events-none" aria-hidden="true" />
@@ -359,7 +314,7 @@ export default function App() {
             <header className="w-full flex items-baseline justify-between pb-3 sm:pb-5 lg:pb-0 shrink-0">
               <div className="flex items-center justify-between w-full lg:w-auto">
                 <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[25px] font-bold uppercase tracking-[-0.02em] text-black leading-tight">
-                  ГРАФИЧЕСКИЙ И БРЕНД-ДИЗАЙНЕР
+                  ГРАФИЧЕСКИЙ<br />И БРЕНД-ДИЗАЙНЕР
                 </h1>
 
                 {/* Mobile Burger Menu Button (Top Right, hidden on desktop) */}
@@ -371,16 +326,7 @@ export default function App() {
                 />
               </div>
 
-              {/* Desktop: Contacts aligned to the right */}
-              <div className="hidden lg:flex items-center justify-end">
-                {renderContacts()}
-              </div>
             </header>
-
-            {/* Mobile Subheader (Contacts) */}
-            <div className="lg:hidden w-full pb-3 shrink-0">
-              {renderContacts()}
-            </div>
           </>
         )}
 
@@ -404,8 +350,8 @@ export default function App() {
         ) : (
           /* MAIN GRID VIEW (Desktop: Horizontal Tabs Left-Aligned + 3-col Grid Below) */
           <>
-            {/* DESKTOP TABS: Horizontal aligned to the left with 100px offset from header */}
-            <div className="hidden lg:flex w-full items-center justify-start mt-[100px] pb-6 shrink-0">
+            {/* DESKTOP TABS: Horizontal aligned to the left with 80px offset from header */}
+            <div className="hidden lg:flex w-full items-center justify-start mt-[80px] pb-6 shrink-0">
               <CategoryNav
                 categories={CATEGORIES}
                 activeCategoryId={activeCategoryId}
@@ -457,7 +403,7 @@ export default function App() {
             </main>
 
             {/* FOOTER: Vector Logo centered at bottom, 40px from images component edge on desktop, 40px from bottom on desktop */}
-            <footer className="mt-auto pt-[10px] lg:pt-[40px] pb-[10px] lg:pb-[40px] shrink-0 flex items-center justify-center">
+            <footer className="hidden lg:flex mt-auto pt-[10px] lg:pt-[40px] pb-[10px] lg:pb-[40px] shrink-0 items-center justify-center">
               <div className="w-[120px] lg:w-[130px]">
                 <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
               </div>

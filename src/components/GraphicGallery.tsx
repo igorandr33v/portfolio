@@ -441,17 +441,11 @@ export const GraphicGallery: React.FC<GraphicGalleryProps> = () => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-6 md:p-8"
             onClick={handleCloseLightbox}
           >
-            {/* Top Bar with pure title (NO numbering) and close button */}
+            {/* Top Bar with close button only */}
             <div
-              className="absolute top-0 left-0 right-0 px-5 sm:px-8 py-5 flex items-center justify-between text-white z-10"
+              className="absolute top-0 left-0 right-0 px-5 sm:px-8 py-5 flex items-center justify-end text-white z-10"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center">
-                <span className="text-xs sm:text-sm font-semibold tracking-wide uppercase">
-                  {activeWork.title}
-                </span>
-              </div>
-
               <button
                 type="button"
                 onClick={handleCloseLightbox}

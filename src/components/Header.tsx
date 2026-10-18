@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ onCopyContact }) => {
         {/* Contacts Bar */}
         <nav
           aria-label="Контакты"
-          className="flex flex-wrap items-center gap-x-6 md:gap-x-8 lg:gap-x-10 gap-y-2 text-sm md:text-[15px] font-normal text-black"
+          className="flex flex-nowrap items-center gap-x-6 md:gap-x-8 lg:gap-x-10 text-sm md:text-[15px] font-normal text-black"
         >
           <a
             href="http://t.me/igorandr33v"
@@ -52,18 +52,6 @@ export const Header: React.FC<HeaderProps> = ({ onCopyContact }) => {
             title="Нажмите, чтобы написать или скопировать"
           >
             igor.andreev.1997@gmail.com
-          </a>
-
-          <a
-            href="tel:+79097023881"
-            onClick={(e) => {
-              navigator.clipboard?.writeText('8 909 702 3881');
-              onCopyContact('8 909 702 3881', 'Телефон скопирован');
-            }}
-            className="hover:opacity-50 transition-opacity duration-300 py-1 cursor-pointer"
-            title="Нажмите, чтобы позвонить или скопировать"
-          >
-            8 909 702 3881
           </a>
         </nav>
       </div>

@@ -15,6 +15,7 @@ import { Logo } from './components/Logo';
 import { MobileMenuDrawer } from './components/MobileMenuDrawer';
 import { AnimatedBurgerButton } from './components/AnimatedBurgerButton';
 import { GraphicGallery } from './components/GraphicGallery';
+import { LogoGrid } from './components/LogoGrid';
 import { ArrowLeft } from 'lucide-react';
 
 // Choreographed stagger container variants for the project grid
@@ -72,6 +73,11 @@ export default function App() {
               imageUrl: isUserCustomUpload ? match.imageUrl : initP.imageUrl,
               galleryImages: initP.galleryImages,
             };
+          }
+
+          // For Logotypes (02), ensure the newly added logo images are loaded
+          if (initP.categoryId === 'logo') {
+            return initP;
           }
 
           // For Graphic Design (03), ensure the newly uploaded images are loaded
@@ -276,6 +282,8 @@ export default function App() {
           ? 'min-h-screen overflow-y-auto'
           : activeCategoryId === 'graphic'
           ? 'h-dvh max-h-dvh overflow-hidden select-none'
+          : activeCategoryId === 'logo'
+          ? 'min-h-screen overflow-y-auto lg:h-dvh lg:max-h-dvh lg:overflow-hidden select-none'
           : 'min-h-screen overflow-y-auto select-none'
       }`}
     >
@@ -291,8 +299,10 @@ export default function App() {
           selectedProject
             ? 'px-5 sm:px-8 lg:px-[40px] py-6 lg:py-[40px] flex flex-col min-h-screen gap-6 lg:gap-[32px]'
             : activeCategoryId === 'graphic'
-            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden lg:justify-between'
-            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-4 sm:pb-6 lg:pb-0 flex flex-col min-h-screen lg:justify-between'
+            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col h-dvh max-h-dvh overflow-hidden lg:justify-between'
+            : activeCategoryId === 'logo'
+            ? 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col min-h-screen lg:h-dvh lg:max-h-dvh lg:overflow-hidden lg:justify-between'
+            : 'px-4 sm:px-6 md:px-8 lg:px-[40px] pt-4 sm:pt-6 md:pt-8 lg:pt-[40px] pb-0 flex flex-col min-h-screen lg:justify-between'
         } box-border`}
       >
         {/* ROW 1: Header (Fixed at top so Back button stays in place upon scroll) */}
@@ -394,6 +404,17 @@ export default function App() {
                   >
                     <GraphicGallery />
                   </motion.div>
+                ) : activeCategoryId === 'logo' ? (
+                  <motion.div
+                    key="logo-grid"
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full flex-1 min-h-0"
+                  >
+                    <LogoGrid />
+                  </motion.div>
                 ) : (
                   <motion.div
                     key={activeCategoryId}
@@ -403,7 +424,7 @@ export default function App() {
                     exit="exit"
                     className="w-full grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-[20px]"
                   >
-                    {currentCategoryProjects.slice(0, 9).map((project) => (
+                    {currentCategoryProjects.slice(0, activeCategoryId === 'branding' ? 3 : 9).map((project) => (
                       <motion.div
                         key={project.id}
                         variants={cardVariants}
@@ -424,7 +445,7 @@ export default function App() {
             </main>
 
             {/* FOOTER: Vector Logo centered at bottom, 40px from images component edge on desktop, 40px from bottom on desktop */}
-            <footer className="hidden lg:flex mt-auto pt-[10px] lg:pt-[40px] pb-[10px] lg:pb-[40px] shrink-0 items-center justify-center">
+            <footer className="flex mt-auto pt-[16px] lg:pt-[40px] pb-[40px] shrink-0 items-center justify-center">
               <div className="w-[120px] lg:w-[130px]">
                 <Logo className="w-[120px] lg:w-[130px] h-auto text-black hover:opacity-75 transition-opacity duration-300" />
               </div>

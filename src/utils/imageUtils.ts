@@ -45,6 +45,12 @@ export const KNOWN_IMAGE_DIMENSIONS: Record<string, ImageDimensions> = {
   'jazz-1.webp': { width: 803, height: 1127, aspectRatio: '803 / 1127' },
   'your-real-side-1.webp': { width: 2972, height: 1127, aspectRatio: '2972 / 1127' },
   'holistima-1.webp': { width: 3183, height: 1127, aspectRatio: '3183 / 1127' },
+  'atlanta.webp': { width: 370, height: 276, aspectRatio: '370 / 276' },
+  'container.webp': { width: 305, height: 296, aspectRatio: '305 / 296' },
+  'dobry-gorod.webp': { width: 284, height: 238, aspectRatio: '284 / 238' },
+  'opora.webp': { width: 507, height: 172, aspectRatio: '507 / 172' },
+  'smysly.webp': { width: 506, height: 171, aspectRatio: '506 / 171' },
+  'sovet-nygani.webp': { width: 506, height: 171, aspectRatio: '506 / 171' },
 };
 
 export function getImageDimensions(url?: string): ImageDimensions | undefined {
